@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LA MARCA — Swiss Boxing Management</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;500;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #0d0d0d;
+  --off-black: #161616;
+  --dark: #1e1e1e;
+  --dark2: #252525;
+  --gold: #c9a84c;
+  --gold-bright: #e8c96a;
+  --gold-dim: rgba(201,168,76,0.15);
+  --white: #f5f2ee;
+  --muted: rgba(245,242,238,0.55);
+  --border: rgba(201,168,76,0.22);
+  --border-white: rgba(245,242,238,0.1);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  font-family: 'Barlow', sans-serif;
+  background: var(--black);
+  color: var(--white);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* CUSTOM CURSOR */
+.cursor {
+  width: 8px; height: 8px;
+  background: var(--gold);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s, width 0.3s, height 0.3s;
+}
+.cursor-ring {
+  width: 32px; height: 32px;
+  border: 1px solid rgba(201,168,76,0.5);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: transform 0.15s ease, width 0.3s, height 0.3s;
+}
+a:hover ~ .cursor, button:hover ~ .cursor { width: 4px; height: 4px; }
+
+/* NOISE */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9997;
+}
+
+/* NAV */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28px 56px;
+  transition: all 0.4s;
+}
+nav.solid {
+  background: rgba(8,8,8,0.92);
+  backdrop-filter: blur(24px);
+  padding: 18px 56px;
+  border-bottom: 1px solid var(--border-white);
+}
+
+.nav-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px;
+  letter-spacing: 0.18em;
+  color: var(--white);
+  text-decoration: none;
+}
+.nav-logo em { color: var(--gold); font-style: normal; }
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--white); }
+
+.lang-switch {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--border-white);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.lang-btn {
+  padding: 6px 13px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: none;
+  transition: all 0.2s;
+}
+.lang-btn.active { background: var(--gold); color: var(--black); }
+
+/* HERO */
+.hero {
+  height: 100vh;
+  min-height: 700px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 80px;
+  overflow: hidden;
+}
+
+.hero-bg-video {
+  position: absolute;
+  inset: 0;
+  background: var(--black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.hero-bg-video::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 35%, rgba(201,168,76,0.12) 0%, transparent 70%),
+    linear-gradient(180deg, rgba(13,13,13,0) 30%, rgba(13,13,13,0.97) 100%);
+  z-index: 2;
+}
+
+/* GEOMETRIC SHAPES */
+.geo-shape {
+  position: absolute;
+  border-radius: 24px;
+  transform-origin: center;
+}
+
+.geo-shape-1 {
+  width: 40vw;
+  height: 130vh;
+  top: -15vh;
+  left: -8vw;
+  background: linear-gradient(135deg, rgba(201,168,76,0.26) 0%, rgba(201,168,76,0.08) 55%, transparent 100%);
+  transform: rotate(-35deg);
+  animation: geoFadeIn 1.4s ease 0.2s both;
+  z-index: 1;
+}
+
+.geo-shape-2 {
+  width: 30vw;
+  height: 110vh;
+  top: -10vh;
+  right: -4vw;
+  background: linear-gradient(135deg, rgba(201,168,76,0.16) 0%, rgba(201,168,76,0.04) 55%, transparent 100%);
+  transform: rotate(-35deg);
+  animation: geoFadeIn 1.4s ease 0.4s both;
+  z-index: 1;
+}
+
+@keyframes geoFadeIn {
+  from { opacity: 0; transform: rotate(-35deg) translateY(30px); }
+  to   { opacity: 1; transform: rotate(-35deg) translateY(0); }
+}
+
+/* diagonal stripes for visual texture */
+.hero-texture {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 80px,
+    rgba(201,168,76,0.015) 80px,
+    rgba(201,168,76,0.015) 81px
+  );
+}
+
+/* BADGE */
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border: 1px solid rgba(201,168,76,0.35);
+  border-radius: 999px;
+  background: rgba(201,168,76,0.07);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 24px;
+  opacity: 0;
+  animation: riseIn 1s ease 0.3s forwards;
+}
+
+.hero-badge-dot {
+  width: 6px; height: 6px;
+  background: var(--gold);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.7); }
+}
+
+.hero-content {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  padding: 0 24px;
+}
+
+.hero-eyebrow {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 20px;
+  opacity: 0;
+  animation: riseIn 1s ease 0.5s forwards;
+}
+
+.hero-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(80px, 16vw, 200px);
+  line-height: 0.88;
+  letter-spacing: 0.04em;
+  margin-bottom: 12px;
+  opacity: 0;
+  animation: riseIn 1s ease 0.7s forwards;
+}
+
+.hero-title-gold { color: var(--gold); }
+
+.hero-subtitle {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(16px, 3vw, 28px);
+  font-weight: 300;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 48px;
+  opacity: 0;
+  animation: riseIn 1s ease 0.9s forwards;
+}
+
+.hero-ctas {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: riseIn 1s ease 1.1s forwards;
+}
+
+.btn {
+  padding: 14px 32px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  display: inline-block;
+  cursor: none;
+  transition: all 0.3s;
+}
+
+.btn-gold {
+  background: var(--gold);
+  color: var(--black);
+  border: 1px solid var(--gold);
+}
+.btn-gold:hover { background: var(--gold-bright); transform: translateY(-2px); }
+
+.btn-outline {
+  background: transparent;
+  color: var(--white);
+  border: 1px solid rgba(245,242,238,0.3);
+}
+.btn-outline:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
+
+.hero-scroll-hint {
+  position: absolute;
+  bottom: 32px;
+  left: 56px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  z-index: 10;
+  opacity: 0;
+  animation: riseIn 1s ease 1.4s forwards;
+}
+
+.scroll-line-h {
+  width: 40px;
+  height: 1px;
+  background: var(--gold);
+  animation: expandLine 2s ease-in-out infinite;
+}
+
+.scroll-text {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+@keyframes expandLine {
+  0%, 100% { width: 40px; opacity: 0.5; }
+  50% { width: 60px; opacity: 1; }
+}
+
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* MANIFESTO */
+.manifesto {
+  padding: 140px 56px;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+.manifesto-image-col {
+  height: 560px;
+  overflow: hidden;
+  border-radius: 4px;
+  min-width: 0;
+}
+
+.manifesto-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  padding-top: 8px;
+}
+
+.manifesto-text {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(36px, 5vw, 56px);
+  line-height: 1.1;
+  letter-spacing: 0.03em;
+  color: var(--white);
+}
+
+.manifesto-text em {
+  color: var(--gold);
+  font-style: normal;
+}
+
+.manifesto-body {
+  margin-top: 32px;
+  grid-column: auto;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.85;
+  color: var(--muted);
+  max-width: 540px;
+}
+
+/* VIDEO SECTION */
+.video-section {
+  padding: 0 56px 140px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.video-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 3px;
+}
+
+.video-item {
+  position: relative;
+  overflow: hidden;
+  background: var(--dark);
+  aspect-ratio: 16/9;
+  cursor: none;
+}
+
+.video-item.tall { aspect-ratio: 9/16; grid-row: span 2; }
+
+.video-placeholder {
+  width: 100%; height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: var(--dark2);
+  position: relative;
+  overflow: hidden;
+}
+
+.video-placeholder::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--dark) 0%, var(--dark2) 100%);
+}
+
+.video-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(8,8,8,0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 24px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 2;
+}
+
+.video-item:hover .video-overlay { opacity: 1; }
+
+.video-play {
+  width: 56px; height: 56px;
+  border: 1px solid var(--gold);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold);
+  font-size: 18px;
+  position: relative;
+  z-index: 1;
+  cursor: none;
+}
+
+.video-caption {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.video-caption strong { color: var(--white); display: block; font-size: 16px; font-weight: 600; margin-top: 4px; letter-spacing: 0; }
+
+/* SERVICES */
+.services {
+  background: var(--off-black);
+  padding: 140px 0;
+}
+
+.services-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 56px;
+}
+
+.section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 80px;
+}
+
+.section-tag {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 16px;
+}
+
+.section-heading {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(40px, 6vw, 72px);
+  letter-spacing: 0.04em;
+  line-height: 0.95;
+}
+
+.service-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+}
+
+.service-card {
+  background: var(--dark);
+  padding: 56px 48px;
+  border-bottom: 1px solid var(--border-white);
+  position: relative;
+  overflow: hidden;
+  transition: background 0.3s;
+}
+
+.service-card::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 0; height: 1px;
+  background: var(--gold);
+  transition: width 0.5s ease;
+}
+
+.service-card:hover { background: #111; }
+.service-card:hover::before { width: 100%; }
+
+.service-number {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 80px;
+  color: rgba(201,168,76,0.07);
+  line-height: 1;
+  position: absolute;
+  top: 32px; right: 32px;
+  letter-spacing: 0.02em;
+}
+
+.service-icon {
+  font-size: 24px;
+  margin-bottom: 28px;
+  display: block;
+}
+
+.service-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.service-desc {
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.75;
+  color: var(--muted);
+}
+
+/* SPLIT — BOXER / SPONSOR */
+.split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.split-side {
+  padding: 120px 64px;
+  position: relative;
+  overflow: hidden;
+}
+
+.split-side.left { background: var(--black); }
+.split-side.right { background: var(--dark); }
+
+.split-side::after {
+  content: '';
+  position: absolute;
+  width: 400px; height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--gold-dim) 0%, transparent 70%);
+  bottom: -200px;
+  opacity: 0.6;
+}
+.split-side.left::after { right: -200px; }
+.split-side.right::after { left: -200px; }
+
+.split-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 160px;
+  color: rgba(201,168,76,0.04);
+  line-height: 1;
+  position: absolute;
+  top: 40px; right: 40px;
+  letter-spacing: 0;
+}
+
+.split-benefits {
+  list-style: none;
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.split-benefits li {
+  font-size: 15px;
+  font-weight: 300;
+  color: rgba(245,242,238,0.75);
+  line-height: 1.6;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.dot-gold {
+  width: 5px; height: 5px;
+  background: var(--gold);
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 9px;
+}
+
+/* PACKAGES */
+.packages {
+  padding: 140px 56px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.pkg-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border-white);
+  margin-top: 72px;
+  border: 1px solid var(--border-white);
+}
+
+.pkg {
+  background: var(--black);
+  padding: 48px 40px;
+  position: relative;
+  transition: background 0.3s;
+}
+
+.pkg.featured {
+  background: var(--dark);
+}
+
+.pkg.featured::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.pkg-tier {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.pkg-tier.gold-text { color: var(--gold); }
+
+.pkg-price {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 56px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  margin-bottom: 6px;
+}
+
+.pkg-period {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 40px;
+}
+
+.pkg-items {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.pkg-items li {
+  font-size: 14px;
+  font-weight: 300;
+  color: rgba(245,242,238,0.7);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  line-height: 1.5;
+}
+
+.tick {
+  color: var(--gold);
+  font-size: 12px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* TEAM */
+.team {
+  background: var(--off-black);
+  padding: 140px 56px;
+}
+
+.team-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+  margin-top: 72px;
+}
+
+.team-card {
+  background: var(--dark);
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 0;
+  overflow: hidden;
+  transition: transform 0.3s;
+}
+
+.team-card:hover { transform: translateY(-4px); }
+
+.team-photo {
+  background: var(--dark2);
+  min-height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.team-initials {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 64px;
+  color: var(--gold);
+  letter-spacing: 0.05em;
+  position: relative;
+  z-index: 1;
+}
+
+.team-photo::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 30%, rgba(201,168,76,0.12), transparent 60%);
+}
+
+.team-info {
+  padding: 40px 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.team-role {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 10px;
+}
+
+.team-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px;
+  letter-spacing: 0.05em;
+  margin-bottom: 18px;
+}
+
+.team-bio {
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.75;
+  color: var(--muted);
+}
+
+/* CONTACT */
+.contact {
+  padding: 140px 56px;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 100px;
+  align-items: start;
+}
+
+.contact-left { display: flex; flex-direction: column; gap: 48px; }
+
+.contact-detail-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+
+.contact-detail-val {
+  font-size: 17px;
+  font-weight: 300;
+  color: var(--white);
+}
+
+.contact-form { display: flex; flex-direction: column; gap: 12px; }
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+input, select, textarea {
+  width: 100%;
+  padding: 16px 20px;
+  background: var(--dark);
+  border: 1px solid var(--border-white);
+  color: var(--white);
+  font-family: 'Barlow', sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  outline: none;
+  transition: border-color 0.25s;
+  -webkit-appearance: none;
+  cursor: none;
+}
+
+input::placeholder, textarea::placeholder { color: rgba(245,242,238,0.3); }
+input:focus, select:focus, textarea:focus { border-color: var(--gold); }
+select option { background: var(--dark); }
+textarea { resize: none; height: 130px; }
+
+/* FOOTER */
+footer {
+  border-top: 1px solid var(--border-white);
+  padding: 48px 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.footer-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.15em;
+}
+.footer-logo em { color: var(--gold); font-style: normal; }
+
+.footer-links {
+  display: flex;
+  gap: 32px;
+}
+
+.footer-links a {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  cursor: none;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--gold); }
+
+.footer-copy {
+  font-size: 12px;
+  color: rgba(245,242,238,0.2);
+}
+
+/* REVEAL */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal.visible { opacity: 1; transform: none; }
+.reveal-delay { transition-delay: 0.15s; }
+.reveal-delay-2 { transition-delay: 0.3s; }
+
+/* LANGUAGE */
+[data-lang="en"] { display: none; }
+body.en [data-lang="de"] { display: none; }
+body.en [data-lang="en"] { display: revert; }
+
+/* RESPONSIVE */
+@media (max-width: 960px) {
+  nav { padding: 20px 24px; }
+  nav.solid { padding: 16px 24px; }
+  .nav-links { display: none; }
+  .manifesto { grid-template-columns: 1fr 1fr; padding: 80px 24px; gap: 40px; }
+  .manifesto-image-col { height: 400px; }
+  .manifesto-body { grid-column: auto; }
+  .video-section { padding: 0 24px 80px; }
+  .video-grid { grid-template-columns: 1fr; }
+  .video-item.tall { aspect-ratio: 16/9; grid-row: span 1; }
+  .services-inner { padding: 0 24px; }
+  .service-grid { grid-template-columns: 1fr; }
+  .split { grid-template-columns: 1fr; }
+  .split-side { padding: 80px 32px; }
+  .packages { padding: 80px 24px; }
+  .pkg-grid { grid-template-columns: 1fr; }
+  .team { padding: 80px 24px; }
+  .team-grid { grid-template-columns: 1fr; }
+  .team-card { grid-template-columns: 1fr; }
+  .team-photo { min-height: 180px; }
+  .contact { grid-template-columns: 1fr; padding: 80px 24px; gap: 48px; }
+  footer { padding: 32px 24px; flex-direction: column; text-align: center; }
+  .footer-links { flex-wrap: wrap; justify-content: center; }
+  .hero-scroll-hint { display: none; }
+}
+@media (max-width: 600px) {
+  .manifesto { grid-template-columns: 1fr; padding: 60px 24px; gap: 32px; }
+  .manifesto-image-col { height: 240px; }
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">LA <em>MARCA</em></a>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="#about" data-lang="de">Management</a><a href="#about" data-lang="en">Management</a></li>
+      <li><a href="#boxer" data-lang="de">Für Boxer</a><a href="#boxer" data-lang="en">For Boxers</a></li>
+      <li><a href="#sponsors" data-lang="de">Für Sponsoren</a><a href="#sponsors" data-lang="en">For Sponsors</a></li>
+      <li><a href="#team">Team</a></li>
+      <li><a href="#contact" data-lang="de">Kontakt</a><a href="#contact" data-lang="en">Contact</a></li>
+    </ul>
+    <div class="lang-switch">
+      <button class="lang-btn active" onclick="setLang('de')">DE</button>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-video">
+    <!-- EIGENES VIDEO HIER EINFÜGEN: <video autoplay muted loop playsinline class="hero-bg-placeholder" src="your-video.mp4"></video> -->
+    <img src="hero-boxing.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;">
+    <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(13,13,13,0.65) 0%,rgba(26,21,16,0.45) 50%,rgba(13,13,13,0.65) 100%);"></div>
+    <div class="geo-shape geo-shape-1"></div>
+    <div class="geo-shape geo-shape-2"></div>
+  </div>
+  <div class="hero-texture"></div>
+  <div class="hero-content">
+    <div class="hero-badge"><span class="hero-badge-dot"></span>Swiss Boxing Management</div>
+    <p class="hero-eyebrow">Zürich · Schweiz</p>
+    <h1 class="hero-title">LA<br><span class="hero-title-gold">MARCA</span></h1>
+    <p class="hero-subtitle" data-lang="de">Wir bauen Athleten zu Marken.</p>
+    <p class="hero-subtitle" data-lang="en">We build athletes into brands.</p>
+    <div class="hero-ctas">
+      <a href="#boxer" class="btn btn-gold" data-lang="de">Ich bin Boxer</a>
+      <a href="#boxer" class="btn btn-gold" data-lang="en">I'm a Boxer</a>
+      <a href="#sponsors" class="btn btn-outline" data-lang="de">Ich bin Sponsor</a>
+      <a href="#sponsors" class="btn btn-outline" data-lang="en">I'm a Sponsor</a>
+    </div>
+  </div>
+  <div class="hero-scroll-hint">
+    <div class="scroll-line-h"></div>
+    <span class="scroll-text" data-lang="de">Scrollen</span>
+    <span class="scroll-text" data-lang="en">Scroll</span>
+  </div>
+</section>
+
+<!-- MANIFESTO -->
+<div class="manifesto reveal" id="about">
+  <div class="manifesto-image-col">
+    <img src="mission-arena.png" alt="Boxing Arena" style="width:100%;height:100%;object-fit:cover;border-radius:4px;display:block;">
+  </div>
+  <div>
+    <p class="manifesto-label" data-lang="de">Unsere Mission</p>
+    <p class="manifesto-label" data-lang="en">Our mission</p>
+    <h2 class="manifesto-text" data-lang="de">Wir bauen<br><em>Athleten</em><br>zu Marken.</h2>
+    <h2 class="manifesto-text" data-lang="en">We build<br><em>Athletes</em><br>into Brands.</h2>
+    <p class="manifesto-body" data-lang="de">La Marca ist kein klassisches Management. Wir nehmen keine Prozente von Kampfgagen. Wir verbinden Athleten mit Sponsoren die in ihre Geschichte investieren wollen. Reichweite, Werte, Authentizität — das ist unser Produkt.<br><br>La Marca wurde von Giacomo und Markos gegründet — zwei Boxer die sich gegenseitig managen. Der Name: LA aus La Rocca, MARCA aus Markos. La Marca bedeutet auf Italienisch «Die Marke». Das ist das Programm.</p>
+    <p class="manifesto-body" data-lang="en">La Marca is not classic management. We don't take percentages of fight purses. We connect athletes with sponsors who want to invest in their story. Reach, values, authenticity — that is our product.<br><br>La Marca was founded by Giacomo and Markos — two boxers who manage each other. The name: LA from La Rocca, MARCA from Markos. La Marca means «The Brand» in Italian. That's the program.</p>
+  </div>
+</div>
+
+<!-- VIDEO GRID -->
+<div class="video-section reveal">
+  <div class="video-grid">
+    <div class="video-item tall">
+      <div class="video-placeholder">
+        <div style="position:absolute;inset:0;background:linear-gradient(160deg,#111 0%,#1a1a1a 100%);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;">
+          <div style="width:64px;height:64px;border:1px solid rgba(201,168,76,0.4);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:rgba(201,168,76,0.4);">▶</div>
+          <p style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:rgba(245,242,238,0.2)" data-lang="de">Euer Video hier</p>
+          <p style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:rgba(245,242,238,0.2)" data-lang="en">Your video here</p>
+        </div>
+      </div>
+      <div class="video-overlay">
+        <div class="video-play">▶</div>
+        <div class="video-caption" style="margin-top:12px;" data-lang="de"><strong>Im Ring</strong>Training & Vorbereitung</div>
+        <div class="video-caption" style="margin-top:12px;" data-lang="en"><strong>In the Ring</strong>Training & Preparation</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:3px;">
+      <div class="video-item">
+        <div class="video-placeholder">
+          <div style="position:absolute;inset:0;background:#121212;display:flex;align-items:center;justify-content:center;">
+            <div style="width:48px;height:48px;border:1px solid rgba(201,168,76,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;color:rgba(201,168,76,0.3);">▶</div>
+          </div>
+        </div>
+        <div class="video-overlay">
+          <div class="video-play" style="width:40px;height:40px;font-size:14px;">▶</div>
+          <div class="video-caption" style="margin-top:8px;" data-lang="de"><strong>Kampfnacht</strong>Highlights</div>
+          <div class="video-caption" style="margin-top:8px;" data-lang="en"><strong>Fight Night</strong>Highlights</div>
+        </div>
+      </div>
+      <div class="video-item">
+        <div class="video-placeholder">
+          <div style="position:absolute;inset:0;background:#0e0e0e;display:flex;align-items:center;justify-content:center;">
+            <div style="width:48px;height:48px;border:1px solid rgba(201,168,76,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;color:rgba(201,168,76,0.3);">▶</div>
+          </div>
+        </div>
+        <div class="video-overlay">
+          <div class="video-play" style="width:40px;height:40px;font-size:14px;">▶</div>
+          <div class="video-caption" style="margin-top:8px;" data-lang="de"><strong>Unser Team</strong>Wer wir sind</div>
+          <div class="video-caption" style="margin-top:8px;" data-lang="en"><strong>Our Team</strong>Who we are</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<div class="services" id="how">
+  <div class="services-inner">
+    <div class="section-header reveal">
+      <div>
+        <p class="section-tag" data-lang="de">Was wir tun</p>
+        <p class="section-tag" data-lang="en">What we do</p>
+        <h2 class="section-heading" data-lang="de">Unser<br>Management</h2>
+        <h2 class="section-heading" data-lang="en">Our<br>Management</h2>
+      </div>
+    </div>
+    <div class="service-grid reveal">
+      <div class="service-card">
+        <span class="service-number">01</span>
+        <span class="service-icon">🎯</span>
+        <h3 class="service-title" data-lang="de">Sponsor-Matching</h3>
+        <h3 class="service-title" data-lang="en">Sponsor Matching</h3>
+        <p class="service-desc" data-lang="de">Wir analysieren das Profil des Boxers und finden den perfekten Sponsor — basierend auf Zielgruppe, Region und Werten des Unternehmens.</p>
+        <p class="service-desc" data-lang="en">We analyze the boxer's profile and find the perfect sponsor — based on target audience, region and company values.</p>
+      </div>
+      <div class="service-card">
+        <span class="service-number">02</span>
+        <span class="service-icon">📋</span>
+        <h3 class="service-title" data-lang="de">Vertragsmanagement</h3>
+        <h3 class="service-title" data-lang="en">Contract Management</h3>
+        <p class="service-desc" data-lang="de">Wir gestalten faire, klare Verträge für alle Parteien. Kein Kleingedrucktes, keine Überraschungen — nur saubere Partnerschaften.</p>
+        <p class="service-desc" data-lang="en">We create fair, clear contracts for all parties. No fine print, no surprises — just clean partnerships.</p>
+      </div>
+      <div class="service-card">
+        <span class="service-number">03</span>
+        <span class="service-icon">📣</span>
+        <h3 class="service-title" data-lang="de">Sichtbarkeit & Medien</h3>
+        <h3 class="service-title" data-lang="en">Visibility & Media</h3>
+        <p class="service-desc" data-lang="de">Wir koordinieren die Medienpräsenz — Social Media Posts, Kampfpräsenz, Content mit dem Boxer und dem Sponsor.</p>
+        <p class="service-desc" data-lang="en">We coordinate media presence — social media posts, fight presence, content with the boxer and sponsor.</p>
+      </div>
+      <div class="service-card">
+        <span class="service-number">04</span>
+        <span class="service-icon">🤝</span>
+        <h3 class="service-title" data-lang="de">Betreuung & Netzwerk</h3>
+        <h3 class="service-title" data-lang="en">Support & Network</h3>
+        <p class="service-desc" data-lang="de">Wir begleiten die Partnerschaft von A bis Z und öffnen Türen im Schweizer Boxsport-Netzwerk in Zürich, Basel und Bern.</p>
+        <p class="service-desc" data-lang="en">We accompany the partnership from A to Z and open doors in the Swiss boxing network in Zurich, Basel and Bern.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BOXER / SPONSOR SPLIT -->
+<div class="split">
+  <div class="split-side left reveal" id="boxer">
+    <span class="split-num">I</span>
+    <p class="section-tag" data-lang="de">Für Boxer</p>
+    <p class="section-tag" data-lang="en">For Boxers</p>
+    <h2 class="section-heading" data-lang="de">Du boxt.<br>Wir regeln<br>den Rest.</h2>
+    <h2 class="section-heading" data-lang="en">You box.<br>We handle<br>the rest.</h2>
+    <ul class="split-benefits">
+      <li><div class="dot-gold"></div><span data-lang="de">Monatliches Sponsoring — finanzielle Basis für deine Karriere</span><span data-lang="en">Monthly sponsoring — financial base for your career</span></li>
+      <li><div class="dot-gold"></div><span data-lang="de">Professionelle Verträge — wir schützen deine Interessen</span><span data-lang="en">Professional contracts — we protect your interests</span></li>
+      <li><div class="dot-gold"></div><span data-lang="de">Schweizer Netzwerk — Zugang zu Gyms, Events und Medien</span><span data-lang="en">Swiss network — access to gyms, events and media</span></li>
+      <li><div class="dot-gold"></div><span data-lang="de">Kein Risiko — wir verdienen nur wenn du verdienst</span><span data-lang="en">No risk — we only earn when you earn</span></li>
+      <li><div class="dot-gold"></div><span data-lang="de">Persönliche Betreuung durch unser Team in Zürich</span><span data-lang="en">Personal support by our team in Zurich</span></li>
+    </ul>
+    <div style="margin-top:48px;">
+      <a href="#contact" class="btn btn-gold" data-lang="de">Jetzt anmelden</a>
+      <a href="#contact" class="btn btn-gold" data-lang="en">Apply now</a>
+    </div>
+  </div>
+  <div class="split-side right reveal" id="sponsors">
+    <span class="split-num">II</span>
+    <p class="section-tag" data-lang="de">Für Sponsoren</p>
+    <p class="section-tag" data-lang="en">For Sponsors</p>
+    <h2 class="section-heading" data-lang="de">Sichtbarkeit<br>die wirklich<br>wirkt.</h2>
+    <h2 class="section-heading" data-lang="en">Visibility<br>that truly<br>works.</h2>
+    <ul class="split-benefits">
+      <li><div class="dot-gold"></div><span data-lang="de">Logo auf Shorts, Jacke und Ausrüstung des Boxers</span><span data-lang="en">Logo on boxer's shorts, jacket and equipment</span></li>
+      <li><div class="dot-gold"></div><span data-lang="de">Präsenz bei Kämpfen und Trainingsevents in der Schweiz</span><span data-lang="en">Presence at fights and training events in Switzerland</span></li>
+      <li><div class="dot-gold"></div><span data-lang="de">Social Media Content — authentisch, nicht generisch</span><span data-lang="en">Social media content — authentic, not generic</span></li>
+      <li><div class="dot-gold"></div><span data-lang="de">Zugang zu einer jungen, sportbegeisterten Zielgruppe</span><span data-lang="en">Access to a young, sports-enthusiastic audience</span></li>
+      <li><div class="dot-gold"></div><span data-lang="de">Direkte Partnerschaft — kein Zwischenhändler</span><span data-lang="en">Direct partnership — no middleman</span></li>
+    </ul>
+    <div style="margin-top:48px;">
+      <a href="#contact" class="btn btn-outline" data-lang="de">Sponsor werden</a>
+      <a href="#contact" class="btn btn-outline" data-lang="en">Become a sponsor</a>
+    </div>
+  </div>
+</div>
+
+<!-- PACKAGES -->
+<div class="packages" style="background:var(--off-black); max-width:100%; padding:140px 56px;">
+  <div style="max-width:1100px; margin:0 auto;">
+    <div class="reveal">
+      <p class="section-tag" data-lang="de">Sponsoring-Pakete</p>
+      <p class="section-tag" data-lang="en">Sponsorship packages</p>
+      <h2 class="section-heading" data-lang="de">Wähle dein Paket</h2>
+      <h2 class="section-heading" data-lang="en">Choose your package</h2>
+    </div>
+    <div class="pkg-grid reveal">
+      <div class="pkg">
+        <p class="pkg-tier" data-lang="de">Silber</p>
+        <p class="pkg-tier" data-lang="en">Silver</p>
+        <p class="pkg-price" data-lang="de">CHF 300.–</p>
+        <p class="pkg-price" data-lang="en">CHF 300.–</p>
+        <p class="pkg-period" data-lang="de">pro Monat</p>
+        <p class="pkg-period" data-lang="en">per month</p>
+        <ul class="pkg-items">
+          <li><span class="tick">✓</span><span data-lang="de">Logo auf Shorts</span><span data-lang="en">Logo on shorts</span></li>
+          <li><span class="tick">✓</span><span data-lang="de">2 Social Media Posts / Monat</span><span data-lang="en">2 social media posts / month</span></li>
+          <li><span class="tick">✓</span><span data-lang="de">Namensnennung bei Kämpfen</span><span data-lang="en">Mention at fights</span></li>
+          <li><span class="tick">✓</span><span data-lang="de">Monatlicher Bericht</span><span data-lang="en">Monthly report</span></li>
+        </ul>
+      </div>
+      <div class="pkg featured">
+        <p class="pkg-tier gold-text">Gold</p>
+        <p class="pkg-price" data-lang="de">CHF 600.–</p>
+        <p class="pkg-price" data-lang="en">CHF 600.–</p>
+        <p class="pkg-period" data-lang="de">pro Monat</p>
+        <p class="pkg-period" data-lang="en">per month</p>
+        <ul class="pkg-items">
+          <li><span class="tick" style="color:var(--gold)">✓</span><span data-lang="de">Logo auf Shorts & Jacke</span><span data-lang="en">Logo on shorts & jacket</span></li>
+          <li><span class="tick" style="color:var(--gold)">✓</span><span data-lang="de">5 Social Media Posts / Monat</span><span data-lang="en">5 social media posts / month</span></li>
+          <li><span class="tick" style="color:var(--gold)">✓</span><span data-lang="de">Präsenz an allen Kämpfen</span><span data-lang="en">Presence at all fights</span></li>
+          <li><span class="tick" style="color:var(--gold)">✓</span><span data-lang="de">Reels & Story Content</span><span data-lang="en">Reels & story content</span></li>
+          <li><span class="tick" style="color:var(--gold)">✓</span><span data-lang="de">Performance Report</span><span data-lang="en">Performance report</span></li>
+        </ul>
+      </div>
+      <div class="pkg">
+        <p class="pkg-tier" data-lang="de">Platin</p>
+        <p class="pkg-tier" data-lang="en">Platinum</p>
+        <p class="pkg-price" data-lang="de">CHF 1'200.–</p>
+        <p class="pkg-price" data-lang="en">CHF 1'200.–</p>
+        <p class="pkg-period" data-lang="de">pro Monat</p>
+        <p class="pkg-period" data-lang="en">per month</p>
+        <ul class="pkg-items">
+          <li><span class="tick">✓</span><span data-lang="de">Exklusives Logo-Placement (Brust)</span><span data-lang="en">Exclusive logo placement (chest)</span></li>
+          <li><span class="tick">✓</span><span data-lang="de">Unbegrenzte Social Media Posts</span><span data-lang="en">Unlimited social media posts</span></li>
+          <li><span class="tick">✓</span><span data-lang="de">VIP bei allen Events</span><span data-lang="en">VIP at all events</span></li>
+          <li><span class="tick">✓</span><span data-lang="de">Exklusiver Brand Ambassador</span><span data-lang="en">Exclusive brand ambassador</span></li>
+          <li><span class="tick">✓</span><span data-lang="de">Co-Branding & Kampagnen</span><span data-lang="en">Co-branding & campaigns</span></li>
+          <li><span class="tick">✓</span><span data-lang="de">Direkter Ansprechpartner</span><span data-lang="en">Direct contact person</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TEAM -->
+<div class="team" id="team">
+  <div class="team-inner">
+    <div class="reveal">
+      <p class="section-tag">Team</p>
+      <h2 class="section-heading" data-lang="de">Die Gründer</h2>
+      <h2 class="section-heading" data-lang="en">The Founders</h2>
+    </div>
+    <div class="team-grid reveal">
+      <div class="team-card">
+        <div class="team-photo">
+          <img src="markos.jpg" style="width:100%;height:100%;object-fit:cover;object-position:center top;">
+        </div>
+        <div class="team-info">
+          <p class="team-role" data-lang="de">Co-Gründer & Management</p>
+          <p class="team-role" data-lang="en">Co-Founder & Management</p>
+          <h3 class="team-name">Markos Souranakis</h3>
+          <p class="team-bio" data-lang="de">Kaufmännische Ausbildung. Passion für Boxen und Unternehmertum. Verantwortlich für Sponsoren-Akquisition, Vertragsmanagement und Business-Entwicklung.</p>
+          <p class="team-bio" data-lang="en">Commercial training. Passion for boxing and entrepreneurship. Responsible for sponsor acquisition, contract management and business development.</p>
+        </div>
+      </div>
+      <div class="team-card">
+        <div class="team-photo">
+          <img src="giacomo.png" style="width:100%;height:100%;object-fit:cover;object-position:center top;">
+        </div>
+        <div class="team-info">
+          <p class="team-role" data-lang="de">Co-Gründer & Sportdirektor</p>
+          <p class="team-role" data-lang="en">Co-Founder & Sports Director</p>
+          <h3 class="team-name">Giacomo La Rocca</h3>
+          <p class="team-bio" data-lang="de">Aktiver Boxer und Insider des Schweizer Boxsports. Tiefstes Verständnis für den Sport und sein Netzwerk. Verantwortlich für Athleten-Betreuung und Partnerschaften mit Gyms.</p>
+          <p class="team-bio" data-lang="en">Active boxer and insider of Swiss boxing. Deep understanding of the sport and its network. Responsible for athlete support and gym partnerships.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<section style="background:var(--black); padding:0;">
+  <div class="contact reveal" id="contact">
+    <div class="contact-left">
+      <div>
+        <p class="section-tag" data-lang="de">Kontakt</p>
+        <p class="section-tag" data-lang="en">Contact</p>
+        <h2 class="section-heading" data-lang="de">Lass uns<br>reden.</h2>
+        <h2 class="section-heading" data-lang="en">Let's<br>talk.</h2>
+      </div>
+      <div>
+        <p class="contact-detail-label">Email</p>
+        <p class="contact-detail-val">info@lamarcaboxing.ch</p>
+      </div>
+      <div>
+        <p class="contact-detail-label" data-lang="de">Standort</p>
+        <p class="contact-detail-label" data-lang="en">Location</p>
+        <p class="contact-detail-val">Zürich, Schweiz</p>
+      </div>
+      <div>
+        <p class="contact-detail-label" data-lang="de">Antwortzeit</p>
+        <p class="contact-detail-label" data-lang="en">Response time</p>
+        <p class="contact-detail-val" data-lang="de">Innerhalb 24 Stunden</p>
+        <p class="contact-detail-val" data-lang="en">Within 24 hours</p>
+      </div>
+    </div>
+    <form onsubmit="return false;" class="contact-form">
+      <div class="form-row">
+        <input type="text" placeholder="Name" required>
+        <input type="email" placeholder="Email" required>
+      </div>
+      <select>
+        <option disabled selected data-lang="de">Ich bin...</option>
+        <option disabled selected data-lang="en">I am...</option>
+        <option data-lang="de">Boxer / Athletin</option>
+        <option data-lang="en">Boxer / Athlete</option>
+        <option data-lang="de">Unternehmen / Sponsor</option>
+        <option data-lang="en">Company / Sponsor</option>
+        <option data-lang="de">Anderes</option>
+        <option data-lang="en">Other</option>
+      </select>
+      <textarea placeholder="Nachricht / Message" required></textarea>
+      <button type="submit" class="btn btn-gold" style="width:100%;text-align:center;" data-lang="de">Nachricht senden →</button>
+      <button type="submit" class="btn btn-gold" style="width:100%;text-align:center;" data-lang="en">Send message →</button>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">LA <em>MARCA</em> BOXING MANAGEMENT</div>
+  <div class="footer-links">
+    <a href="#" data-lang="de">Impressum</a>
+    <a href="#" data-lang="en">Imprint</a>
+    <a href="#" data-lang="de">Datenschutz</a>
+    <a href="#" data-lang="en">Privacy</a>
+  </div>
+  <p class="footer-copy">© 2026 · lamarcaboxing.ch</p>
+</footer>
+
+<script>
+// CURSOR
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx + 'px';
+  cursor.style.top = my + 'px';
+});
+
+function animateRing() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  ring.style.left = rx + 'px';
+  ring.style.top = ry + 'px';
+  requestAnimationFrame(animateRing);
+}
+animateRing();
+
+// NAV
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('solid', window.scrollY > 60);
+});
+
+// LANG
+function setLang(lang) {
+  document.body.classList.toggle('en', lang === 'en');
+  document.querySelectorAll('.lang-btn').forEach((b, i) => {
+    b.classList.toggle('active', (lang === 'de' && i === 0) || (lang === 'en' && i === 1));
+  });
+}
+
+// REVEAL
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) e.target.classList.add('visible');
+  });
+}, { threshold: 0.08 });
+
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
